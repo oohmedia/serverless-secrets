@@ -294,7 +294,9 @@ class ServerlessSecrets {
 
     // need to validate that all secrets exist in provider
     const storageProvider = this.getStorageProvider()
-    const missingSecretsPromise = storageProvider.listSecrets().then(secrets => {
+    const rootSecretPaths = _.uniq(_.values(provider.environmentSecrets).map(param => param.split('/').length > 1 ? `/${param.split('/')[1]}` : param));
+
+    const missingSecretsPromise = storageProvider.listSecrets(rootSecretPaths).then(secrets => {
       const secretKeys = secrets.map(secret => secret.name)
       const missingProviderEnvironmentSecretsGroup = this.findAllEnvironmentSecretsMissingRemotely(provider.environmentSecrets, secretKeys)
       const missingFunctionsEnvironmentSecretsGroups = _.mapValues(functions, func => this.findAllEnvironmentSecretsMissingRemotely(func.environmentSecrets, secretKeys))
