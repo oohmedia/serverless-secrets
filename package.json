@@ -31,12 +31,12 @@
     "lodash": "^4.17.11"
   },
   "devDependencies": {
-    "ava": "^0.25.0",
-    "aws-sdk": "^2.363.0",
-    "testdouble": "^2.1.2"
+    "ava": "^2.2.0",
+    "aws-sdk": "^2.492.0",
+    "testdouble": "^3.12.1"
   },
   "peerDependencies": {
-    "aws-sdk": "^2.102.0"
+    "aws-sdk": "^2.492.0"
   },
   "ava": {
     "files": [
