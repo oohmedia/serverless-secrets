@@ -1,6 +1,6 @@
 {
   "name": "serverless-secrets",
-  "version": "4.0",
+  "version": "4.0.0",
   "description": "A serverless plugin for managing secrets",
   "main": "plugin/index.js",
   "scripts": {
