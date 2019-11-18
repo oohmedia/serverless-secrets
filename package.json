@@ -1,6 +1,6 @@
 {
   "name": "serverless-secrets",
-  "version": "3.0.0-beta.11",
+  "version": "4.0",
   "description": "A serverless plugin for managing secrets",
   "main": "plugin/index.js",
   "scripts": {
@@ -28,15 +28,12 @@
   },
   "homepage": "https://github.com/trek10inc/serverless-secrets",
   "dependencies": {
+    "@aws-sdk/client-ssm-node": "0.1.0-preview.2",
     "lodash": "^4.17.15"
   },
   "devDependencies": {
     "ava": "^2.2.0",
-    "aws-sdk": "^2.492.0",
     "testdouble": "^3.12.1"
-  },
-  "peerDependencies": {
-    "aws-sdk": "^2.492.0"
   },
   "ava": {
     "files": [
