@@ -1,5 +1,1 @@
-# package directories
-node_modules
-
-.yarnclean
-.nyc_output
+**/node_modules/**
