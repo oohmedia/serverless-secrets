@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/trek10inc/serverless-secrets",
   "dependencies": {
-    "@aws-sdk/client-ssm-node": "0.1.0-preview.2",
+    "@aws-sdk/client-ssm-node": "^0.1.0-preview.5",
     "lodash": "^4.17.15"
   },
   "devDependencies": {
