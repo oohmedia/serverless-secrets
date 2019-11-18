@@ -2,13 +2,14 @@ const fs = require('fs');
 const path = require('path');
 const _ = require('lodash');
 const constants = require('../lib/constants');
+const awsProvider = require('../lib/providers/aws');
 
 let secrets = null;
 
 function getStorageProvider(options) {
   switch (options.provider) {
     case 'aws':
-      return require('../lib/providers/aws')(options.providerOptions || {});
+      return awsProvider(options.providerOptions || {});
     default:
       throw new Error(`Provider not supported: ${options.provider}`);
   }
@@ -30,6 +31,7 @@ function load(options) {
   const mergedOptions = { ...secrets.options, ...options };
   const environmentSecrets = {
     ...secrets.environments.$global,
+    // eslint-disable-next-line
     ...secrets.environments[process.env._HANDLER.split('.')[1]],
   };
   const parameterNames = _.uniq(_.values(environmentSecrets));

@@ -1,6 +1,7 @@
 const fs = require('fs');
 const _ = require('lodash');
 const constants = require('../lib/constants');
+const awsProvider = require('../lib/providers/aws');
 
 class ServerlessSecrets {
   constructor(serverless, options) {
@@ -137,7 +138,7 @@ class ServerlessSecrets {
     const providerName = _.get(this.serverless.service, 'provider.name', null);
     switch (providerName) {
       case 'aws':
-        return require('../lib/providers/aws')(providerOptions);
+        return awsProvider(providerOptions);
       default:
         throw new Error(`Provider not supported: ${providerName}`);
     }
@@ -246,12 +247,13 @@ class ServerlessSecrets {
 
     // variables
     const { functions } = this.serverless.service;
-    const environments = Object.keys(functions).reduce((environments, key) => {
+    const environments = Object.keys(functions).reduce((envObj, key) => {
       const functionName = functions[key].handler.split('.')[1];
       if (functions[key].environmentSecrets) {
-        environments[functionName] = functions[key].environmentSecrets;
+        // eslint-disable-next-line
+        envObj[functionName] = functions[key].environmentSecrets;
       }
-      return environments;
+      return envObj;
     }, {});
 
     environments.$global = this.serverless.service.provider.environmentSecrets || {};
@@ -419,7 +421,7 @@ class ServerlessSecrets {
   findAllEnvironmentSecretsMissingRemotely(environmentSecrets, secretKeys) {
     if (!environmentSecrets) return [];
     return _.toPairs(environmentSecrets).filter(
-      ([envSecKey, envSecValue]) => !secretKeys.some(secretKey => secretKey === envSecValue)
+      ([, envSecValue]) => !secretKeys.some(secretKey => secretKey === envSecValue)
     );
   }
 

@@ -4,7 +4,7 @@
   "description": "A serverless plugin for managing secrets",
   "main": "plugin/index.js",
   "scripts": {
-    "test": "ava",
+    "test": "jest --verbose",
     "lint": "eslint --max-warnings=0 .",
     "prettier": "prettier --write '**/*.js'"
   },
@@ -34,19 +34,13 @@
     "lodash": "^4.17.15"
   },
   "devDependencies": {
-    "ava": "^2.2.0",
     "eslint": "6.6.0",
     "eslint-config-airbnb-base": "14.0.0",
     "eslint-config-prettier": "6.6.0",
     "eslint-plugin-import": "2.18.2",
     "eslint-plugin-prettier": "3.1.1",
-    "prettier": "1.19.1",
-    "testdouble": "^3.12.1"
-  },
-  "ava": {
-    "files": [
-      "**/*.{test,tests}.{js,jsx}"
-    ],
-    "concurrency": 5
+    "jest": "24.9.0",
+    "nock": "11.7.0",
+    "prettier": "1.19.1"
   }
 }
