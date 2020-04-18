@@ -1,6 +1,6 @@
 {
-  "name": "serverless-secrets",
-  "version": "4.0.0",
+  "name": "@oohmedia/serverless-secrets",
+  "version": "5.0.0",
   "description": "A serverless plugin for managing secrets",
   "main": "plugin/index.js",
   "scripts": {
@@ -8,26 +8,8 @@
     "lint": "eslint --max-warnings=0 .",
     "prettier": "prettier --write '**/*.js'"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/trek10inc/serverless-secrets"
-  },
-  "keywords": [
-    "serverless",
-    "serverless secrets",
-    "serverless management",
-    "serverless plugin",
-    "secrets",
-    "encrypt",
-    "aws",
-    "parameter store",
-    "env"
-  ],
-  "author": "Jared Short <jshort@trek10.com> (https://www.trek10.com)",
+  "repository": "https://github.com/oohmedia/serverless-secrets",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/trek10inc/serverless-secrets/issues"
-  },
   "homepage": "https://github.com/trek10inc/serverless-secrets",
   "dependencies": {
     "lodash": "^4.17.15"
