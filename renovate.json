@@ -1,0 +1,16 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "packageRules": [
+    {
+      "depTypeList": [
+        "devDependencies"
+      ],
+      "rangeStrategy": "pin"
+    }
+  ],
+  "encrypted": {
+    "npmToken": "UfVob0U9urtyvp9j/ItaUv4X+zOroEl5MdGRklxNa4d0CUllezyXSFsV2QJjvi5H82+shkOqdvAyj7Anv1cGs7qfONyFHP/0eWWY7O0vqU2aCcbGxGTnkiCJoG8fNo51xYI6kKfnBqketJ6NxOtwZk/CHNOpjivL8LqVK0qj5NQppKu4ulvgx9oKxv07I45pjp0U07s4dpCTFI/1fnrIqde734LgxJPCRt/fzxNVGSBPWgt3BSHPm+dG5N/iZqKa/seGZu3FynGiO/ClifQ7I84lt2qV4rGfYe0kLUfY7+VdnUE9rt8NtqTkzvtyNnT7sKFVMwH7nRi4+YarNBUysA=="
+  }
+}
