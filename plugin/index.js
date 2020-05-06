@@ -1,5 +1,5 @@
 const fs = require('fs');
-const _ = require('lodash');
+const { get, set, values, mapValues, uniq, toPairs, flatMap } = require('../lib/notLodash');
 const constants = require('../lib/constants');
 const awsProvider = require('../lib/providers/aws');
 
@@ -135,7 +135,7 @@ class ServerlessSecrets {
     if (!this.deployMode && this.options.region) providerOptions.region = this.options.region;
     else providerOptions.region = providerOptions.region || this.serverless.service.provider.region;
 
-    const providerName = _.get(this.serverless.service, 'provider.name', null);
+    const providerName = get(this.serverless.service, 'provider.name', null);
     switch (providerName) {
       case 'aws':
         return awsProvider(providerOptions);
@@ -220,8 +220,8 @@ class ServerlessSecrets {
     this.serverless.cli.log('Serverless Secrets beginning packaging process');
     this.writeConfigFile();
 
-    if (!_.get(this.serverless.service, 'package.include')) {
-      _.set(this.serverless.service, 'package.include', []);
+    if (!get(this.serverless.service, 'package.include')) {
+      set(this.serverless.service, 'package.include', []);
     }
     this.serverless.service.package.include.push(constants.CONFIG_FILE_NAME);
 
@@ -241,7 +241,7 @@ class ServerlessSecrets {
       skipValidation: false,
       omitPermissions: false,
       resourceForIamRole: '*',
-      ..._.get(this.serverless.service, 'custom.serverlessSecrets', {}),
+      ...get(this.serverless.service, 'custom.serverlessSecrets', {}),
       provider: this.serverless.service.provider.name,
     };
 
@@ -284,10 +284,10 @@ class ServerlessSecrets {
   }
 
   setIamPermissions() {
-    let iamRoleStatements = _.get(this.serverless.service, 'provider.iamRoleStatements', null);
+    let iamRoleStatements = get(this.serverless.service, 'provider.iamRoleStatements', null);
     if (!iamRoleStatements) {
-      _.set(this.serverless.service, 'provider.iamRoleStatements', []);
-      iamRoleStatements = _.get(this.serverless.service, 'provider.iamRoleStatements');
+      set(this.serverless.service, 'provider.iamRoleStatements', []);
+      iamRoleStatements = get(this.serverless.service, 'provider.iamRoleStatements');
     }
     if (!this.options.omitPermissions && !this.config.options.omitPermissions) {
       iamRoleStatements.push({
@@ -308,8 +308,8 @@ class ServerlessSecrets {
 
     // need to validate that all secrets exist in provider
     const storageProvider = this.getStorageProvider();
-    const rootSecretPaths = _.uniq(
-      _.values(provider.environmentSecrets).map(param =>
+    const rootSecretPaths = uniq(
+      values(provider.environmentSecrets).map(param =>
         param.split('/').length > 1 ? `/${param.split('/')[1]}` : param
       )
     );
@@ -320,7 +320,7 @@ class ServerlessSecrets {
         provider.environmentSecrets,
         secretKeys
       );
-      const missingFunctionsEnvironmentSecretsGroups = _.mapValues(functions, func =>
+      const missingFunctionsEnvironmentSecretsGroups = mapValues(functions, func =>
         this.findAllEnvironmentSecretsMissingRemotely(func.environmentSecrets, secretKeys)
       );
       return [
@@ -330,7 +330,7 @@ class ServerlessSecrets {
         ),
       ]
         .concat(
-          _.toPairs(missingFunctionsEnvironmentSecretsGroups).map(([funcName, missingSecrets]) =>
+          toPairs(missingFunctionsEnvironmentSecretsGroups).map(([funcName, missingSecrets]) =>
             this.constructMissingRemoteSecretsErrorMessage(missingSecrets, funcName)
           )
         )
@@ -343,19 +343,19 @@ class ServerlessSecrets {
       provider.environmentSecrets,
       provider.environment
     );
-    const functionsCollisionGroups = _.mapValues(functions, func =>
+    const functionsCollisionGroups = mapValues(functions, func =>
       this.findAllEnvironmentSecretsDuplicatedInEnvironment(
         func.environmentSecrets,
         func.environment
       )
     );
-    const functionsProviderCollisionGroups = _.mapValues(functions, func =>
+    const functionsProviderCollisionGroups = mapValues(functions, func =>
       this.findAllEnvironmentSecretsDuplicatedInEnvironment(
         func.environmentSecrets,
         provider.environment
       )
     );
-    const providerFunctionsCollisionGroups = _.mapValues(functions, func =>
+    const providerFunctionsCollisionGroups = mapValues(functions, func =>
       this.findAllEnvironmentSecretsDuplicatedInEnvironment(
         provider.environmentSecrets,
         func.environment
@@ -366,17 +366,17 @@ class ServerlessSecrets {
       this.constructCollisionsErrorMessage(providerCollisionGroup, null, null),
     ]
       .concat(
-        _.toPairs(providerFunctionsCollisionGroups).map(([funcName, collisionGroups]) =>
+        toPairs(providerFunctionsCollisionGroups).map(([funcName, collisionGroups]) =>
           this.constructCollisionsErrorMessage(collisionGroups, null, funcName)
         )
       )
       .concat(
-        _.toPairs(functionsProviderCollisionGroups).map(([funcName, collisionGroups]) =>
+        toPairs(functionsProviderCollisionGroups).map(([funcName, collisionGroups]) =>
           this.constructCollisionsErrorMessage(collisionGroups, funcName, null)
         )
       )
       .concat(
-        _.toPairs(functionsCollisionGroups).map(([funcName, collisionGroups]) =>
+        toPairs(functionsCollisionGroups).map(([funcName, collisionGroups]) =>
           this.constructCollisionsErrorMessage(collisionGroups, funcName, funcName)
         )
       )
@@ -394,8 +394,8 @@ class ServerlessSecrets {
 
   findAllEnvironmentSecretsDuplicatedInEnvironment(environmentSecrets, environment) {
     if (!environmentSecrets || !environment) return [];
-    return _.flatMap(_.toPairs(environment), ([envKey]) =>
-      _.toPairs(environmentSecrets).filter(([secKey]) => secKey === envKey)
+    return flatMap(toPairs(environment), ([envKey]) =>
+      toPairs(environmentSecrets).filter(([secKey]) => secKey === envKey)
     );
   }
 
@@ -420,7 +420,7 @@ class ServerlessSecrets {
 
   findAllEnvironmentSecretsMissingRemotely(environmentSecrets, secretKeys) {
     if (!environmentSecrets) return [];
-    return _.toPairs(environmentSecrets).filter(
+    return toPairs(environmentSecrets).filter(
       ([, envSecValue]) => !secretKeys.some(secretKey => secretKey === envSecValue)
     );
   }

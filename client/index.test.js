@@ -1,5 +1,4 @@
-const _ = require('lodash');
-
+const { cloneDeep } = require('../lib/notLodash');
 let secrets;
 
 const mockGetSecret = jest.fn();
@@ -35,12 +34,12 @@ describe('client', () => {
   beforeAll(() => {
     // eslint-disable-next-line
     process.env._HANDLER = 'asdf.asdf';
-    processEnvClone = _.cloneDeep(process.env);
+    processEnvClone = cloneDeep(process.env);
   });
 
   beforeEach(() => {
     jest.clearAllMocks();
-    secrets = _.cloneDeep(defaultSecrets);
+    secrets = cloneDeep(defaultSecrets);
     mockReadFileSync.mockImplementation(() => JSON.stringify(secrets));
   });
 

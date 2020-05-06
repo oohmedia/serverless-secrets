@@ -11,9 +11,6 @@
   "repository": "https://github.com/oohmedia/serverless-secrets",
   "license": "MIT",
   "homepage": "https://github.com/trek10inc/serverless-secrets",
-  "dependencies": {
-    "lodash": "^4.17.15"
-  },
   "devDependencies": {
     "aws-sdk": "2.578.0",
     "eslint": "6.6.0",
@@ -24,5 +21,8 @@
     "jest": "24.9.0",
     "nock": "11.7.0",
     "prettier": "1.19.1"
+  },
+  "dependencies": {
+    "lodash.mapvalues": "4.6.0"
   }
 }

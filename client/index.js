@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const _ = require('lodash');
+const { mapValues, uniq, values, keys } = require('../lib/notLodash');
 const constants = require('../lib/constants');
 const awsProvider = require('../lib/providers/aws');
 
@@ -34,15 +34,15 @@ function load(options) {
     // eslint-disable-next-line
     ...secrets.environments[process.env._HANDLER.split('.')[1]],
   };
-  const parameterNames = _.uniq(_.values(environmentSecrets));
+  const parameterNames = uniq(values(environmentSecrets));
   const provider = getStorageProvider(mergedOptions);
   return provider.getSecret(parameterNames).then(data => {
     const missingParameters = parameterNames.filter(
-      expected => !_.keys(data).some(received => expected === received)
+      expected => !keys(data).some(received => expected === received)
     );
     Object.assign(
       process.env,
-      _.mapValues(environmentSecrets, key => data[key])
+      mapValues(environmentSecrets, key => data[key])
     );
     if (missingParameters.length) {
       const message = `Secrets could not be obtained for the following environment variables: ${missingParameters.join(
