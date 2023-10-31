@@ -1,0 +1,26 @@
+name: Commit-Ingest
+
+on:
+  push:
+    branches:
+      - feature/*
+      - master
+
+jobs:
+  github-info:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Commit count
+        uses: dynatrace-oss/dynatrace-github-action@v8
+        with:
+          url: '${{ secrets.DYNATRACE_TENANT_URL }}'
+          token: '${{ secrets.DYNATRACE_METRICS_TOKEN }}'
+          metrics: |
+            - metric: "github.commits"
+              value: "1.0"
+              dimensions:
+                project: "${{ github.repository }}"
+                branch: "${{ github.ref_name }}"
+                commit-id: "${{ github.sha }}"
+                event: "${{ github.event_name }}"
+                owner: "${{ github.actor }}"
