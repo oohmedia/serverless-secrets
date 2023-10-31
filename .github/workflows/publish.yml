@@ -1,0 +1,122 @@
+name: Publish
+
+concurrency:
+  group: publish
+  cancel-in-progress: true
+
+on:
+    workflow_dispatch:    
+#   push:
+#     branches:
+#       - feature/*
+#       - master
+
+env:
+  NPM_TOKEN: ${{ secrets.GH_ORG_ACCESS_TOKEN }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.OTP_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.OTP_SECRET_ACCESS_KEY }}
+  AWS_REGION: ap-southeast-2
+
+jobs:
+  start-run:
+    runs-on: ubuntu-latest
+    outputs:
+      workflow-run-id: ${{ steps.get-start-timestamp.outputs.RUN_START_TIME }}
+    steps:
+      - name: get-start-timestamp
+        id: get-start-timestamp
+        run: |
+          timestamp=$(date +%s)
+          echo "::set-output name=RUN_START_TIME::$timestamp"
+      - name: push timestamp
+        uses: dynatrace-oss/dynatrace-github-action@v8
+        with:
+          url: '${{ secrets.DYNATRACE_TENANT_URL }}'
+          token: '${{ secrets.DYNATRACE_METRICS_TOKEN }}'
+          metrics: |
+            - metric: "ci.publish.start"
+              value: "${{ steps.get-start-timestamp.outputs.RUN_START_TIME }}"
+              dimensions:
+                project: "${{ github.repository }}"
+                run-id: "${{ github.run_id }}"
+                run-no: "${{ steps.get-start-timestamp.outputs.RUN_START_TIME }}"
+                branch: "${{ github.ref_name }}"
+
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish
+        working-directory: src
+        run: |
+          git config --global user.name GitHub Actions
+          git config --global user.email technology@oohmedia.com.au
+          npm config set sign-git-tag true
+          npm version $1
+          VERSION_TAG=`node -p "require('./package.json').version"`
+          git tag -s $VERSION_TAG
+          git push origin $VERSION_TAG
+          npm publish --access=restricted
+
+  push-metrics:
+    if: ${{ always() }}
+    needs:
+      - start-run
+      - publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: deployment success count
+        if: ${{ always() && !(contains(needs.*.result, 'failure')) }}
+        uses: dynatrace-oss/dynatrace-github-action@v8
+        with:
+          url: '${{ secrets.DYNATRACE_TENANT_URL }}'
+          token: '${{ secrets.DYNATRACE_METRICS_TOKEN }}'
+          metrics: |
+            - metric: "ci.publish.status"
+              value: "1.0"
+              dimensions:
+                project: "${{ github.repository }}"
+                branch: "${{ github.ref_name }}"
+                event: "${{ github.event_name }}"
+                owner: "${{ github.actor }}"
+                status: "success"
+      - name: deployment failed count
+        if: ${{ always() && (contains(needs.*.result, 'failure')) }}
+        uses: dynatrace-oss/dynatrace-github-action@v8
+        with:
+          url: '${{ secrets.DYNATRACE_TENANT_URL }}'
+          token: '${{ secrets.DYNATRACE_METRICS_TOKEN }}'
+          metrics: |
+            - metric: "ci.publish.status"
+              value: "1.0"
+              dimensions:
+                project: "${{ github.repository }}"
+                branch: "${{ github.ref_name }}"
+                event: "${{ github.event_name }}"
+                owner: "${{ github.actor }}"
+                status: "failed"
+                
+  end-run:
+    if: ${{ always() }}
+    needs:
+      - push-metrics
+      - start-run
+    runs-on: ubuntu-latest
+    steps:
+      - name: get-end-timestamp
+        id: get-end-timestamp
+        run: |
+          timestamp=$(date +%s)
+          echo "::set-output name=RUN_END_TIME::$timestamp"
+      - name: push timestamp
+        uses: dynatrace-oss/dynatrace-github-action@v8
+        with:
+          url: '${{ secrets.DYNATRACE_TENANT_URL }}'
+          token: '${{ secrets.DYNATRACE_METRICS_TOKEN }}'
+          metrics: |
+            - metric: "ci.publish.end"
+              value: "${{ steps.get-end-timestamp.outputs.RUN_END_TIME }}"
+              dimensions:
+                project: "${{ github.repository }}"
+                run-id: "${{ github.run_id }}"                
+                run-no: "${{ needs.start-run.outputs.workflow-run-id }}"
+                branch: "${{ github.ref_name }}"     
