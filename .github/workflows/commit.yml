@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Commit count
-        uses: dynatrace-oss/dynatrace-github-action@v8
+        uses: dynatrace-oss/dynatrace-github-action@v9
         with:
           url: '${{ secrets.DYNATRACE_TENANT_URL }}'
           token: '${{ secrets.DYNATRACE_METRICS_TOKEN }}'
