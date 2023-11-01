@@ -57,8 +57,9 @@ jobs:
           code --version
 
           git config --global core.editor "code --wait"
-          git config --global user.name GitHub Actions
-          git config --global user.email technology@oohmedia.com.au
+          git config --global user.name otp-ci
+          git config --global user.email otpci@oohmedia.com.au
+          git remote set-url origin https://otp-ci:${{ secrets.GH_ADMIN_TOKEN }}@github.com/oohmedia/serverless-secrets.git
           npm config set sign-git-tag true
           export VERSION_TAG=`node -p "require('./package.json').version"`
           echo $VERSION_TAG
