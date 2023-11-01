@@ -49,6 +49,7 @@ jobs:
       - name: Publish
         working-directory: ./
         run: |
+          git config --global core.editor "code --wait"
           git config --global user.name GitHub Actions
           git config --global user.email technology@oohmedia.com.au
           npm config set sign-git-tag true
