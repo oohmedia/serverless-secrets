@@ -61,6 +61,7 @@ jobs:
           git config --global user.email technology@oohmedia.com.au
           npm config set sign-git-tag true
           export VERSION_TAG=`node -p "require('./package.json').version"`
+          echo $VERSION_TAG
           git tag -s $VERSION_TAG
           git push origin $VERSION_TAG
           npm publish --access=restricted
