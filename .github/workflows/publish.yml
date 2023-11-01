@@ -63,8 +63,8 @@ jobs:
           npm config set sign-git-tag true
           export VERSION_TAG=`node -p "require('./package.json').version"`
           echo $VERSION_TAG
-          git tag -a $VERSION_TAG -m "release_added"
-          git push origin $VERSION_TAG
+          # git tag -a $VERSION_TAG -m "release_added"
+          # git push origin $VERSION_TAG
           npm publish --access=restricted
 
   push-metrics:
