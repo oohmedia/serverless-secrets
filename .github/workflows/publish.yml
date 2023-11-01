@@ -46,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Publish
-        working-directory: src
+        working-directory: ./
         run: |
           git config --global user.name GitHub Actions
           git config --global user.email technology@oohmedia.com.au
