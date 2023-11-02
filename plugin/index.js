@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { get, set, values, mapValues, uniq, toPairs, flatMap } = require('../lib/notLodash');
+const { get, set, values, mapValues, uniq, toPairs } = require('../lib/notLodash');
 const constants = require('../lib/constants');
 const awsProvider = require('../lib/providers/aws');
 
@@ -394,7 +394,7 @@ class ServerlessSecrets {
 
   findAllEnvironmentSecretsDuplicatedInEnvironment(environmentSecrets, environment) {
     if (!environmentSecrets || !environment) return [];
-    return flatMap(toPairs(environment), ([envKey]) =>
+    return toPairs(environment).flatMap(([envKey]) =>
       toPairs(environmentSecrets).filter(([secKey]) => secKey === envKey)
     );
   }
