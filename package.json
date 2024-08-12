@@ -1,6 +1,6 @@
 {
   "name": "@oohmedia/serverless-secrets",
-  "version": "6.0.2",
+  "version": "6.0.3",
   "description": "A serverless plugin for managing secrets",
   "main": "plugin/index.js",
   "scripts": {
@@ -22,7 +22,7 @@
     "prettier": "1.19.1"
   },
   "dependencies": {
-    "@aws-sdk/client-ssm": "^3.438.0",
+    "@aws-sdk/client-ssm": "^3.628.0",
     "lodash.mapvalues": "4.6.0"
   }
 }
