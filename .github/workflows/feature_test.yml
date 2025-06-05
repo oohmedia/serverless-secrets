@@ -45,5 +45,3 @@ jobs:
           yarn install
           yarn test
           echo "Feature branch test completed successfully."
-          echo "DISPLAY YARN LOCK FILE"
-          cat yarn.lock
