@@ -43,5 +43,8 @@ jobs:
           #### NOT PUBLISH in feature branch #### n#m publish --access=restricted
           npm install -g yarn
           yarn install
+          echo "### Running audits ###"
+          yarn audit --level critical
+          echo "### Running test ###"
           yarn test
           echo "Feature branch test completed successfully."
