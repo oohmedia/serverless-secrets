@@ -48,3 +48,5 @@ jobs:
           echo "### Running test ###"
           yarn test
           echo "Feature branch test completed successfully."
+          echo '### Display yarn.local file ###'
+          cat yarn.lock
