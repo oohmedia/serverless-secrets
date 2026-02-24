@@ -24,5 +24,8 @@
   "dependencies": {
     "@aws-sdk/client-ssm": "^3.628.0",
     "lodash.mapvalues": "4.6.0"
+  },
+  "resolutions": {
+    "fast-xml-parser": "5.3.7"
   }
 }
