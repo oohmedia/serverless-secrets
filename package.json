@@ -1,6 +1,6 @@
 {
   "name": "@oohmedia/serverless-secrets",
-  "version": "6.0.4",
+  "version": "6.0.5",
   "description": "A serverless plugin for managing secrets",
   "main": "plugin/index.js",
   "scripts": {
